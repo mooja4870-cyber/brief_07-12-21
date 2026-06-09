@@ -1,0 +1,53 @@
+name: 시황 카톡 브리핑
+
+# 한국시각(KST = UTC+9) 기준 하루 3회 발송
+#   07:00 KST = 22:00 UTC (전일)  → 미국 증시 마감 종합
+#   12:00 KST = 03:00 UTC         → 한국 오전장 시황
+#   21:00 KST = 12:00 UTC         → 한국 마감 + 미국 전망
+# 참고: GitHub Actions cron 은 UTC 이며, 부하에 따라 수 분 지연될 수 있습니다.
+on:
+  schedule:
+    - cron: "0 22 * * *"   # morning
+    - cron: "0 3 * * *"    # noon
+    - cron: "0 12 * * *"   # evening
+  workflow_dispatch:        # 수동 실행(테스트)용
+    inputs:
+      slot:
+        description: "발송 시점"
+        required: false
+        default: "evening"
+        type: choice
+        options: [morning, noon, evening]
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 의존성 설치
+        run: pip install -r market_brief/requirements.txt
+
+      - name: 슬롯 결정
+        id: slot
+        run: |
+          if [ -n "${{ github.event.inputs.slot }}" ]; then
+            echo "slot=${{ github.event.inputs.slot }}" >> "$GITHUB_OUTPUT"
+          else
+            case "${{ github.event.schedule }}" in
+              "0 22 * * *") echo "slot=morning" >> "$GITHUB_OUTPUT" ;;
+              "0 3 * * *")  echo "slot=noon"    >> "$GITHUB_OUTPUT" ;;
+              *)            echo "slot=evening" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
+
+      - name: 시황 브리핑 발송
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
+        run: python -m market_brief.main --slot "${{ steps.slot.outputs.slot }}"
