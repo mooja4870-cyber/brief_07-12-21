@@ -5,6 +5,15 @@
 
 ---
 
+## v0.1.3 (2026-06-10)
+**스케줄을 GitHub Actions cron → 로컬 Mac crontab 으로 전환**
+
+- 6/9~6/10 정기 실행 4건 모두 1시간 18분~3시간 52분 지연, 6/10 12:00분은 미실행(누락) 확인
+  → GitHub 무료 cron 의 구조적 한계로 판단, 정시 발송 불가
+- 로컬 crontab 에 07:00/12:00/21:00 KST 정각 발송 등록 (`run_brief.sh` 래퍼 신규, 로그 `logs/` 30일 보관)
+- 워크플로(`market-brief.yml`)는 schedule 트리거 제거, 수동 실행(workflow_dispatch) 백업 전용으로 유지
+- 대상 파일: `run_brief.sh`(신규) · `.github/workflows/market-brief.yml` · `README.md`
+
 ## v0.1.2 (2026-06-09)
 **지수 표기 순서 통일 + 클라우드 자동발송 활성화**
 

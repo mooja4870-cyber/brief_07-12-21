@@ -1,16 +1,10 @@
 name: 시황 카톡 브리핑
 
-# 한국시각(KST = UTC+9) 기준 하루 3회 발송
-#   07:00 KST = 22:00 UTC (전일)  → 미국 증시 마감 종합
-#   12:00 KST = 03:00 UTC         → 한국 오전장 시황
-#   21:00 KST = 12:00 UTC         → 한국 마감 + 미국 전망
-# 참고: GitHub Actions cron 은 UTC 이며, 부하에 따라 수 분 지연될 수 있습니다.
+# 정기 발송은 로컬 Mac crontab(07/12/21시 KST)에서 수행합니다.
+#   → run_brief.sh 참고. GitHub Actions cron 은 1~4시간 지연·누락이 잦아 제거함(v0.1.3).
+# 이 워크플로는 수동 실행(workflow_dispatch) 전용 백업입니다.
 on:
-  schedule:
-    - cron: "0 22 * * *"   # morning
-    - cron: "0 3 * * *"    # noon
-    - cron: "0 12 * * *"   # evening
-  workflow_dispatch:        # 수동 실행(테스트)용
+  workflow_dispatch:        # 수동 실행(백업·테스트)용
     inputs:
       slot:
         description: "발송 시점"
@@ -34,16 +28,7 @@ jobs:
 
       - name: 슬롯 결정
         id: slot
-        run: |
-          if [ -n "${{ github.event.inputs.slot }}" ]; then
-            echo "slot=${{ github.event.inputs.slot }}" >> "$GITHUB_OUTPUT"
-          else
-            case "${{ github.event.schedule }}" in
-              "0 22 * * *") echo "slot=morning" >> "$GITHUB_OUTPUT" ;;
-              "0 3 * * *")  echo "slot=noon"    >> "$GITHUB_OUTPUT" ;;
-              *)            echo "slot=evening" >> "$GITHUB_OUTPUT" ;;
-            esac
-          fi
+        run: echo "slot=${{ github.event.inputs.slot || 'evening' }}" >> "$GITHUB_OUTPUT"
 
       - name: 시황 브리핑 발송
         env:
