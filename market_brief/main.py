@@ -1,10 +1,11 @@
 """
-엔트리포인트: 데이터 수집 → 요약 생성 → 카카오 발송.
+엔트리포인트: 공모전/지원사업 데이터 수집 → 요약 생성 → 카카오 발송.
 
 사용:
-  python -m market_brief.main            # 현재 한국시각으로 슬롯 자동 판별
-  python -m market_brief.main --slot noon
-  DRY_RUN=1 python -m market_brief.main --slot evening   # 발송 없이 미리보기
+  python -m market_brief.main               # 현재 한국시각으로 슬롯 자동 판별
+  python -m market_brief.main --slot morning
+  python -m market_brief.main --slot afternoon
+  DRY_RUN=1 python -m market_brief.main --slot morning  # 발송 없이 미리보기
 """
 from __future__ import annotations
 
@@ -17,12 +18,10 @@ KST = timezone(timedelta(hours=9))
 
 
 def detect_slot(hour: int) -> str:
-    """한국시각 hour(0~23)로 슬롯 판별. 가장 가까운 정시 기준."""
-    if 5 <= hour < 10:
-        return "morning"   # 07:00 발송
-    if 10 <= hour < 16:
-        return "noon"      # 12:00 발송
-    return "evening"       # 21:00 발송
+    """한국시각 hour(0~23)로 슬롯 판별. 07:00 및 14:00 기준."""
+    if hour < 11:
+        return "morning"    # 07:00 발송
+    return "afternoon"      # 14:00 발송
 
 
 def run(slot: str | None = None) -> None:
@@ -31,13 +30,13 @@ def run(slot: str | None = None) -> None:
         slot = detect_slot(now.hour)
     date_str = now.strftime("%Y-%m-%d (%a) %H:%M KST")
 
-    print(f"▶ 시황 브리핑 시작 | slot={slot} | {date_str}")
+    print(f"▶ 지자체/기관 공모전 브리핑 시작 | slot={slot} | {date_str}")
 
-    print("· 시장 데이터 수집 중…")
-    quotes = market_data.collect()
-    if not quotes:
-        raise RuntimeError("시장 데이터를 한 건도 수집하지 못했습니다. 발송을 중단합니다.")
-    table = market_data.to_table(quotes)
+    print("· 공모전 및 지원사업 데이터 수집 중…")
+    items = market_data.collect()
+    if not items:
+        raise RuntimeError("공모전/지원사업 데이터를 한 건도 수집하지 못했습니다. 발송을 중단합니다.")
+    table = market_data.to_table(items)
     print(table)
 
     print("· 요약 생성 중…")
@@ -51,10 +50,10 @@ def run(slot: str | None = None) -> None:
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="한·미 증시 시황 카톡 브리핑")
+    p = argparse.ArgumentParser(description="지자체·공공기관 AI·숏폼 공모전 및 체류 지원사업 카톡 브리핑")
     p.add_argument(
         "--slot",
-        choices=["morning", "noon", "evening"],
+        choices=["morning", "afternoon", "noon", "evening"],
         default=None,
         help="발송 시점(미지정 시 현재 한국시각으로 자동 판별)",
     )
@@ -64,3 +63,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

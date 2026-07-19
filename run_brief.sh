@@ -1,6 +1,6 @@
 #!/bin/bash
-# 시황 카톡 브리핑 로컬 실행 래퍼 (crontab용)
-# 사용: run_brief.sh [morning|noon|evening]  (생략 시 현재 시각으로 자동 판별)
+# 지자체·기관 AI/숏폼 공모전 카톡 브리핑 로컬 실행 래퍼 (crontab용)
+# 사용: run_brief.sh [morning|afternoon|noon|evening]  (생략 시 현재 시각으로 자동 판별)
 set -u
 
 DIR="$(cd "$(dirname "$0")" && pwd)"

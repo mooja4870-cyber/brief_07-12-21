@@ -5,6 +5,15 @@
 
 ---
 
+## v0.2.0 (2026-07-19)
+**주식 시황 알림 → 지자체·기관 AI/숏폼/홍보 공모전 및 체류 지원사업 알림 기능으로 전면 전환**
+
+- **수집 대상 변경**: 네이버 금융 주식 데이터 대신 웰촌(welchon.com) 이벤트 게시판 및 위비티(wevity.com) 정부/공공기관·영상/AI 카테고리 실시간 크롤링 (`market_data.py`)
+- **요약 프롬프트 및 구조 변경**: 지자체/기관 AI·숏폼 제작, 홍보 콘텐츠, 지역 체류(살아보기 등) 공고의 상금·혜택·마감일·참가조건 중심 5개 블록 구성 (`summarizer.py`)
+- **원본 링크 연동 및 카카오톡 노란색 버튼 동적 추출**: 요약 블록(block2~4) 하단 `🔗 원본 링크: URL`에서 URL을 자동 추출하여 말풍선 노란색 액션 버튼(`원본 공고 보기`)으로 연결 (`kakao_client.py`)
+- **발송 일정(crontab) 변경**: 기존 3회 발송에서 매일 **07:00(morning), 14:00(afternoon)** 2회 발송으로 crontab 및 엔트리포인트 변경 (`main.py`, `run_brief.sh`, crontab)
+- **대상 파일**: `market_brief/market_data.py` · `market_brief/summarizer.py` · `market_brief/kakao_client.py` · `market_brief/main.py` · `run_brief.sh` · `README.md` · `market_brief/README.md` · `.github/workflows/market-brief.yml` · `ver.md`
+
 ## v0.1.3 (2026-06-10)
 **스케줄을 GitHub Actions cron → 로컬 Mac crontab 으로 전환**
 
