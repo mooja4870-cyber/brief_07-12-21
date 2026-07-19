@@ -5,6 +5,15 @@
 
 ---
 
+## v0.3.0 (2026-07-19)
+**카카오톡 알림 링크를 d_airelatednews AI/숏폼 공모전 웹 서비스(`https://d-airelatednews-web.onrender.com`)와 전면 연동 및 멀티 버튼 적용**
+
+- **웹 배포처 연동**: `market_brief/config.py` 및 `kakao_client.py`에 `WEB_APP_URL` 환경변수 연동 및 카카오톡 기본 말풍선 링크(`_LINK`)를 `d_airelatednews` 웹 서비스로 설정
+- **멀티 버튼 구조 도입**: 개별 공모전 블록 전송 시 **[원본 공고 보기]** (개별 공고 원문) 버튼과 **[전체 공모전 웹앱 보기]** (`d_airelatednews` 웹 배포처) 버튼 2개를 동시 제공하도록 `_send_text` 업그레이드
+- **대상 파일**: `market_brief/config.py` · `market_brief/kakao_client.py` · `ver.md`
+
+---
+
 ## v0.2.0 (2026-07-19)
 **주식 시황 알림 → 지자체·기관 AI/숏폼/홍보 공모전 및 체류 지원사업 알림 기능으로 전면 전환**
 

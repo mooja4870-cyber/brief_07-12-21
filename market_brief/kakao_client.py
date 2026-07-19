@@ -16,10 +16,10 @@ from . import config
 _TOKEN_URL = "https://kauth.kakao.com/oauth/token"
 _SEND_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
 
-# 말풍선 기본 링크 (지자체/웰촌 공모전 포털)
+# 말풍선 기본 링크 (d_airelatednews 웹 배포처)
 _LINK = {
-    "web_url": "https://www.welchon.com/web/lay1/program/S1T31C447/eventNewList.do?menuIdx=&cIdx=evpr",
-    "mobile_web_url": "https://www.welchon.com/web/lay1/program/S1T31C447/eventNewList.do?menuIdx=&cIdx=evpr",
+    "web_url": config.WEB_APP_URL,
+    "mobile_web_url": config.WEB_APP_URL,
 }
 
 
@@ -40,25 +40,40 @@ def _refresh_access_token() -> str:
 
 
 def _send_text(access_token: str, text: str, custom_url: str | None = None) -> None:
-    """단일 텍스트 말풍선을 '나에게 보내기'로 전송. 텍스트 내 링크가 있으면 버튼 링크로 자동 지정."""
+    """단일 텍스트 말풍선을 '나에게 보내기'로 전송. d_airelatednews 웹 배포처 및 원본 링크를 버튼으로 연결."""
     url_match = re.search(r"(https?://[^\s)\]]+)", text)
     if custom_url:
-        link = {"web_url": custom_url, "mobile_web_url": custom_url}
-        button_title = "원본 공고 보기"
+        target_url = custom_url
     elif url_match:
-        found_url = url_match.group(1).strip()
-        link = {"web_url": found_url, "mobile_web_url": found_url}
-        button_title = "원본 공고 보기"
+        target_url = url_match.group(1).strip()
     else:
-        link = _LINK
-        button_title = "공모전 포털 보기"
+        target_url = None
 
-    template = {
-        "object_type": "text",
-        "text": text,
-        "link": link,
-        "button_title": button_title,
-    }
+    if target_url:
+        # 개별 공모전 블록: 원본 공고 보기 + 전체 공모전 웹앱 보기 2개 버튼 제공
+        template = {
+            "object_type": "text",
+            "text": text,
+            "link": {"web_url": target_url, "mobile_web_url": target_url},
+            "buttons": [
+                {
+                    "title": "원본 공고 보기",
+                    "link": {"web_url": target_url, "mobile_web_url": target_url},
+                },
+                {
+                    "title": "전체 공모전 웹앱 보기",
+                    "link": _LINK,
+                },
+            ],
+        }
+    else:
+        # 요약/헤더 및 전략 팁 블록: d_airelatednews 웹 배포처 연결
+        template = {
+            "object_type": "text",
+            "text": text,
+            "link": _LINK,
+            "button_title": "AI 공모전·뉴스 모음 웹 보기",
+        }
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/x-www-form-urlencoded",
