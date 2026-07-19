@@ -5,6 +5,14 @@
 
 ---
 
+## v0.3.1 (2026-07-19)
+**연동 웹앱 폴더명 변경 (`d_airelatednews` → `d_LOCAL`) 반영**
+
+- **설정 및 카톡 클라이언트 주석 업데이트**: `market_brief/config.py` 및 `market_brief/kakao_client.py` 내 참조 폴더명과 식별자를 `d_LOCAL`로 일괄 갱신
+- **대상 파일**: `market_brief/config.py` · `market_brief/kakao_client.py` · `ver.md`
+
+---
+
 ## v0.3.0 (2026-07-19)
 **카카오톡 알림 링크를 d_airelatednews AI/숏폼 공모전 웹 서비스(`https://d-airelatednews-web.onrender.com`)와 전면 연동 및 멀티 버튼 적용**
 

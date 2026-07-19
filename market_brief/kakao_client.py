@@ -16,7 +16,7 @@ from . import config
 _TOKEN_URL = "https://kauth.kakao.com/oauth/token"
 _SEND_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
 
-# 말풍선 기본 링크 (d_airelatednews 웹 배포처)
+# 말풍선 기본 링크 (d_LOCAL 웹 배포처)
 _LINK = {
     "web_url": config.WEB_APP_URL,
     "mobile_web_url": config.WEB_APP_URL,
@@ -40,7 +40,7 @@ def _refresh_access_token() -> str:
 
 
 def _send_text(access_token: str, text: str, custom_url: str | None = None) -> None:
-    """단일 텍스트 말풍선을 '나에게 보내기'로 전송. d_airelatednews 웹 배포처 및 원본 링크를 버튼으로 연결."""
+    """단일 텍스트 말풍선을 '나에게 보내기'로 전송. d_LOCAL 웹 배포처 및 원본 링크를 버튼으로 연결."""
     url_match = re.search(r"(https?://[^\s)\]]+)", text)
     if custom_url:
         target_url = custom_url
@@ -67,7 +67,7 @@ def _send_text(access_token: str, text: str, custom_url: str | None = None) -> N
             ],
         }
     else:
-        # 요약/헤더 및 전략 팁 블록: d_airelatednews 웹 배포처 연결
+        # 요약/헤더 및 전략 팁 블록: d_LOCAL 웹 배포처 연결
         template = {
             "object_type": "text",
             "text": text,
