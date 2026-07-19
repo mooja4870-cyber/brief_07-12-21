@@ -5,6 +5,14 @@
 
 ---
 
+## v0.3.2 (2026-07-19)
+**Render 배포 주소 폐기 및 Streamlit Cloud 웹앱(`d_LOCAL`) 전면 전환**
+
+- **WEB_APP_URL 기본값 변경**: `market_brief/config.py`의 `WEB_APP_URL` 기본 주소에서 Render URL(`d-airelatednews-web.onrender.com`)을 완전히 삭제하고, `d_LOCAL` Streamlit Community Cloud 주소(`https://mooja4870-cyber-d-local-streamlit-app.streamlit.app`)로 전환
+- **대상 파일**: `market_brief/config.py` · `ver.md`
+
+---
+
 ## v0.3.1 (2026-07-19)
 **연동 웹앱 폴더명 변경 (`d_airelatednews` → `d_LOCAL`) 반영**
 

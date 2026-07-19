@@ -53,5 +53,5 @@ def kakao_client_secret() -> str | None:
 # 발송 끄기(테스트용): DRY_RUN=1 이면 카톡 발송 대신 콘솔 출력
 DRY_RUN = os.environ.get("DRY_RUN", "").strip() in ("1", "true", "True")
 
-# 카톡 알림 연결 웹 배포처 (d_LOCAL 앱 주소)
-WEB_APP_URL = os.environ.get("WEB_APP_URL", "https://d-airelatednews-web.onrender.com")
+# 카톡 알림 연결 웹 배포처 (d_LOCAL Streamlit 클라우드 앱 주소)
+WEB_APP_URL = os.environ.get("WEB_APP_URL", "https://mooja4870-cyber-d-local-streamlit-app.streamlit.app")
